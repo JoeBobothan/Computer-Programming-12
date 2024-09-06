@@ -1,5 +1,5 @@
 void drawHouse() {
-   fill(50, 50, 200);
+  fill(50, 50, 200);
   rect(width/2, 200, 200, 150);
   fill(50, 200, 150);
   rect(550, 100, 35, 100);
@@ -29,9 +29,10 @@ void drawTree() {
 
 void drawSun() {
   push();
+  rotate(PI);
   strokeWeight(2);
   fill(255, 255, 50);
-  translate(width/2, 75);
+  translate(0, -275);
   for (int i = 0; i < 12; i++) {
     rect(-2, 28, 4, 15);
     rotate(PI/6);
@@ -44,9 +45,14 @@ void drawMoon() {
   push();
   noStroke();
   fill(255, 255, 125);
-  translate(width/2, 75);
+  translate(0, -275);
   circle(0, 0, 85);
   fill(sky);
   circle(-20, 0, 70);
   pop();
+}
+
+void drawGrass() {
+  fill(100, 255, 100);
+  rect(-3, 350, width+6, height+3);
 }
