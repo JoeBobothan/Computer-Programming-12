@@ -1,14 +1,19 @@
-void drawFlower(float x, float y, int p, color c, float s) {
+void drawFlower(float x, float y, int p, color c, float s, boolean useStroke) {
   push();
   translate(x, y);
   scale(s);
-  drawPetals(p, c);
+  fill(50, 200, 50);
+  rect(-10, 0, 20, 200);
+  drawPetals(p, c, useStroke);
   pop();
 }
 
-void drawPetals(int p, color c) {
+void drawPetals(int p, color c, boolean useStroke) {
   push();
+  if (p % 2 == 0) rotate(PI/p);
   fill(c);
+  if (useStroke) stroke(night);
+  if (!useStroke) noStroke();
   for (int i = 0; i < p; i++) {
     beginShape();
     vertex(-15, -10);
@@ -42,7 +47,15 @@ void drawPetals(int p, color c) {
     endShape();
     rotate(2*PI/p);
   }
-  fill(red(c)/2, green(c)/2, blue(c)/2);
-  circle(0, 0, 40);
+  if (!useStroke) {
+    rotate(PI/p);
+    stroke(night);
+    for (int i = 0; i < p; i++) {
+      line(0, 0, 0, -24*pow(p, 0.5));
+      rotate(2*PI/p);
+    }
+  }
+  fill(200, 200, 50);
+  circle(0, 0, 60);
   pop();
 }

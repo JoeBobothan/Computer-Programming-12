@@ -14,7 +14,7 @@ void setup() {
   size(800, 450);
   background(night);
   smooth();
-  //noStroke();
-  
-  drawFlower(400, 225, 7, day, 1);
+  drawFlower(150, 175, 9, day, 1, false);
+  drawFlower(400, 175, 7, day, 1, false);
+  drawFlower(650, 175, 8, day, 1, false);
 }
