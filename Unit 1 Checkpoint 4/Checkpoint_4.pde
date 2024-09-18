@@ -1,7 +1,7 @@
 // Connor Tsoi
 // Computer Programming 12
 // Block 1-4
-// September 11, 2024
+// September 18, 2024
 
 int mode;
 final int p1 = 0;
@@ -28,18 +28,35 @@ color Purple = color(153, 51, 255);
 void setup() {
   size(800, 450);
   noStroke();
-  pattern1();
 }
 
-//void draw() {
-//  if (mode == p1) {
-//    pattern1();
-//  } else if (mode == p2) {
-//    pattern2();
-//  } else if (mode == p3) {
-//    pattern3();
-//  } else {
-//    println("Invalid mode");
-//    noLoop();
-//  }
-//}
+void draw() {
+  push();
+  if (mode == p1) {
+    pattern1();
+  } else if (mode == p2) {
+    pattern2();
+  } else if (mode == p3) {
+    pattern3();
+  } else {
+    println("Invalid mode");
+    noLoop();
+  }
+  pop();
+  push();
+  rectMode(CENTER);
+  fill(102, 128);
+  if (mouseX > 12.5 && mouseX < 37.5 && mouseY > height/2 - 25 && mouseY < height/2 + 25) {
+    fill(102, 204);
+  }
+  rect(25, height/2, 25, 50, 5);
+  fill(102, 128);
+  if (mouseX > width - 37.5 && mouseX < width - 12.5 && mouseY > height/2 - 25 && mouseY < height/2 + 25) {
+    fill(102, 204);
+  }
+  rect(width - 25, height/2, 25, 50, 5);
+  fill(255, 128);
+  triangle(18, height/2, 32, height/2 - 7, 32, height/2 + 7);
+  triangle(width - 18, height/2, width - 32, height/2 - 7, width - 32, height/2 + 7);
+  pop();
+}

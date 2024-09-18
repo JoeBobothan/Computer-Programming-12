@@ -16,18 +16,18 @@ void node(float x, float y) {
   push();
   translate(x, y);
   fill(Y1);
-  nodePart();
+  nodeThird();
   rotate(2*PI/3);
   fill(Y2);
-  nodePart();
+  nodeThird();
   rotate(2*PI/3);
   fill(Y3);
-  nodePart();
+  nodeThird();
   rotate(2*PI/3);
   pop();
 }
 
-void nodePart() {
+void nodeThird() {
   beginShape();
   vertex(0, 0);
   vertex(0, -90);
