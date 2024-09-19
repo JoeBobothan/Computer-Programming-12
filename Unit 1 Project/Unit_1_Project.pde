@@ -22,10 +22,12 @@ final int M9 = 9;
 
 ArrayList<Wall> walls;
 
-int ballX, ballY, ballD;
+float ballX, ballY;
+int ballD;
 boolean draggingBall = false;
-PVector ballV;
+PVector ballV = new PVector(0, 0);
 
+String debugger = "hi";
 
 void setup() {
   size(750, 1000);
@@ -34,7 +36,7 @@ void setup() {
   
   // Ball Variables
   ballX = width/2;
-  ballY = 750;
+  ballY = 850;
   ballD = 50;
   
   mode = GAME;
