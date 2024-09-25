@@ -26,19 +26,30 @@ float ballX, ballY;
 int ballD;
 boolean draggingBall = false;
 PVector ballV = new PVector(0, 0);
+PVector fall = new PVector(0, 0);
 
-String debugger = "hi";
+String debugger = "";
+
+int switchTimer;
+boolean blueTurn = true;
+boolean shotBall = false;
+
+
+color red = color(250, 100, 100);
+color blue = color(100, 100, 250);
 
 void setup() {
   size(750, 1000);
   rectMode(CENTER);
+  textAlign(CENTER, CENTER);
   walls = new ArrayList<Wall>();
-  
+
   // Ball Variables
   ballX = width/2;
-  ballY = 850;
-  ballD = 50;
-  
+  ballY = 800;
+  ballD = 35;
+
+  switchTimer = 100;
   mode = GAME;
 }
 
@@ -55,4 +66,12 @@ void draw() {
     noLoop();
   }
   pop();
+}
+
+void turnReset() {
+  ballX = width/2;
+  ballY = 800;
+  ballD = 35;
+
+  switchTimer = 100;
 }

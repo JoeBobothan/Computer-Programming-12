@@ -15,8 +15,9 @@ class Wall {
     strokeWeight(5);
     fill(255);
     rect(0, 0, Width, Height);
-    fill(255, 100);
-    rect(0, 0, Width + ballD, Height + ballD);
+    //fill(255, 100);
+    //rect(0, 0, Width + ballD, Height + ballD);
+    //line(- Width/2 - 100, - Height/2 + 100, - Width/2 + 100, - Height/2 - 100);
     pop();
   }
 }

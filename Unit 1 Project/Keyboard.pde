@@ -36,4 +36,15 @@ void keyPressed() {
     ballX = mouseX;
     ballY = mouseY;
   }
+  if (key == 'l' || key == 'L') {
+    ballX = 125 + ballD/2;
+    ballY = height/2;
+    ballV = new PVector(500-ballD, -750+ballD);
+    ballV.setMag(10);
+  }
+  if (key == 'r' || key == 'R') {
+    ballV.setMag(0);
+    ballX = width/2;
+    ballY = 800;
+  }
 }

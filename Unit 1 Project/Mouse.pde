@@ -9,10 +9,10 @@ void mouseReleased() {
 
   if (draggingBall) {
     draggingBall = false;
+    //shotBall = true;
     PVector ballVec = new PVector((ballX - mouseX), (ballY - mouseY));
-    ballVec.limit(150);
+    ballVec.limit(100);
     ballV = new PVector(ballVec.x/5, ballVec.y/5);
-    // change ball velocities by vx = (ballx - mousex)/12
   }
 }
 
@@ -20,7 +20,7 @@ void mouseDragged() {
 }
 
 void mousePressed() {
-  if (dist(ballX, ballY, mouseX, mouseY) < ballD/2) {
+  if (!shotBall && dist(ballX, ballY, mouseX, mouseY) < ballD/2) {
     draggingBall = true;
   }
 }
