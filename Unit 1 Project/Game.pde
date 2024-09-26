@@ -11,6 +11,18 @@ void game() {
   fill(0);
   circle(width/2, height-800, ballD*1.25);
 
+  push();
+  translate(width/2, 0);
+  fill(255);
+  rect(0, 0, 200, 100, 25);
+  line(0, 0, 0, 50);
+  textSize(25);
+  fill(blue);
+  text(blueScore, -50, 22);
+  fill(red);
+  text(redScore, 50, 22);
+  pop();
+
   if (draggingBall) {
     push();
     translate(ballX, ballY);
@@ -82,8 +94,10 @@ void game() {
       debugger = "Bottom Left";
     }
   }
-  fill(0);
-  text(debugger, width/2, 850);
+  if (hints) {
+    fill(0);
+    text(debugger, width/2, 850);
+  }
 
   //2 cirlces bouncing off each other would bounce using the tangent line as a flat surface
 
@@ -104,13 +118,29 @@ void game() {
       if (blueTurn) nextMap();
     }
   }
-  noStroke();
-  fill(255, 0, 0);
-  square(278, 875, 2);// bottom right pixel
-  square(550, 875, 2);
-  square(448, 900, 2);
-  square(420, 900, 2);
-  set(278, 875, red);
+  if (hints) {
+    noStroke();
+    if (map == 9) {
+      fill(255, 0, 0);
+      // Map 9 Winnable places
+      //square(278, 875, 2);// bottom right pixel only
+      set(278, 875, color(255, 0, 0));//  the pixel 1 down works on map 5
+      square(550, 875, 2);
+      square(200, 875, 2);
+      square(448, 875, 2);
+      square(448, 900, 2);
+      square(420, 900, 2);
+      square(405, 900, 2);
+      square(428, 678, 2);
+    }
+
+    if (map == 5) {
+      fill(0, 255, 0);
+      square(500, 900, 2);
+      square(243, 875, 2);
+      set(278, 876, color(0, 255, 0));//  the pixel 1 down works on map 5
+    }
+  }
 }
 
 PVector cornerCollision(PVector corner, float cornerX, float cornerY) {
@@ -124,6 +154,13 @@ PVector cornerCollision(PVector corner, float cornerX, float cornerY) {
 }
 
 void gameClicks() {
+  if (draggingBall) {
+    draggingBall = false;
+    shotBall = true;
+    PVector ballVec = new PVector((ballX - mouseX), (ballY - mouseY));
+    ballVec.limit(100);
+    ballV = new PVector(ballVec.x/5, ballVec.y/5);
+  }
 }
 
 void nextMap() {
@@ -139,6 +176,9 @@ void nextMap() {
     walls.add(new Wall(250, height*2/3, 250, 40));
   } else if (map == M4) {
   } else if (map == M5) {
+    walls.add(new Wall(350, 400, 350, 40));
+    walls.add(new Wall(350, 600, 350, 40));
+    walls.add(new Wall(300, height/2, 350, 40));
   } else if (map == M6) {
     walls.add(new Wall(275, 350, 300, 40));
     walls.add(new Wall(575, 350, 100, 40));

@@ -6,17 +6,6 @@ void mouseReleased() {
   } else if (mode == WIN) {
     winClicks();
   }
-
-  if (draggingBall) {
-    draggingBall = false;
-    //shotBall = true;
-    PVector ballVec = new PVector((ballX - mouseX), (ballY - mouseY));
-    ballVec.limit(100);
-    ballV = new PVector(ballVec.x/5, ballVec.y/5);
-  }
-}
-
-void mouseDragged() {
 }
 
 void mousePressed() {

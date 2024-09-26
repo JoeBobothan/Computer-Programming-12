@@ -34,6 +34,10 @@ int switchTimer;
 boolean blueTurn = true;
 boolean shotBall = false;
 
+boolean hints = false;
+
+int redScore = 0;
+int blueScore = 0;
 
 color red = color(250, 100, 100);
 color blue = color(100, 100, 250);
