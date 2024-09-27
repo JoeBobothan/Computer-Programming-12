@@ -112,12 +112,22 @@ void game() {
     ballV.setMag(0);
     switchTimer--;
     if (switchTimer <= 0) {
+      if (dist(ballX, ballY, width/2, height-800) < 10) {
+        if (blueTurn) blueScore++;
+        else redScore++;
+      }
       turnReset();
       shotBall = false;
       blueTurn = !blueTurn;
-      if (blueTurn) nextMap();
+      if (blueTurn) {
+        //  if (blueScore > 10 || redScore > 10) {
+        //if (blueScore != redScore)
+
+        nextMap();
+      }
     }
   }
+
   if (hints) {
     noStroke();
     if (map == 9) {

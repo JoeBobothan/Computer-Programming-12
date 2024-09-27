@@ -38,6 +38,7 @@ boolean hints = false;
 
 int redScore = 0;
 int blueScore = 0;
+boolean blueWins = false;
 
 color red = color(250, 100, 100);
 color blue = color(100, 100, 250);
@@ -46,6 +47,9 @@ void setup() {
   size(750, 1000);
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
+  //surface.setResizable(true);
+  surface.setLocation(1170, 0);
+  
   walls = new ArrayList<Wall>();
 
   // Ball Variables
