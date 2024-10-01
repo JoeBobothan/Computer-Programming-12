@@ -39,6 +39,7 @@ boolean hints = false;
 int redScore = 0;
 int blueScore = 0;
 boolean blueWins = false;
+boolean enterWinMode = false;
 
 color red = color(250, 100, 100);
 color blue = color(100, 100, 250);
@@ -48,7 +49,7 @@ void setup() {
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   //surface.setResizable(true);
-  surface.setLocation(1170, 0);
+  surface.setLocation(1165, 0);
   
   walls = new ArrayList<Wall>();
 
@@ -58,7 +59,6 @@ void setup() {
   ballD = 35;
 
   switchTimer = 100;
-  mode = GAME;
 }
 
 void draw() {

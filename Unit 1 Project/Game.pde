@@ -106,8 +106,6 @@ void game() {
     wall.show();
   }
 
-  //debugger = str(switchTimer);
-
   if ((shotBall && ballV.mag() < 0.25) || dist(ballX, ballY, width/2, height-800) < 10) {
     ballV.setMag(0);
     switchTimer--;
@@ -120,9 +118,14 @@ void game() {
       shotBall = false;
       blueTurn = !blueTurn;
       if (blueTurn) {
-        //  if (blueScore > 10 || redScore > 10) {
-        //if (blueScore != redScore)
-
+        if ((blueScore != redScore) && (blueScore >= 10 || redScore >= 10)) {
+          if (blueScore > redScore) {
+            blueWins = true;
+          } else {
+            blueWins = false;
+          }
+          mode = WIN;
+        }
         nextMap();
       }
     }
@@ -185,6 +188,13 @@ void nextMap() {
     walls.add(new Wall(500, height/3, 250, 40));
     walls.add(new Wall(250, height*2/3, 250, 40));
   } else if (map == M4) {
+    walls.add(new Wall(340, 420, 60, 40)); // + 20
+    walls.add(new Wall(410, 580, 60, 40));
+    walls.add(new Wall(290, height/2, 40, 200));
+    walls.add(new Wall(460, height/2, 40, 200));
+    
+    walls.add(new Wall(155, height/2, 60, 40));
+    walls.add(new Wall(595, height/2, 60, 40));
   } else if (map == M5) {
     walls.add(new Wall(350, 400, 350, 40));
     walls.add(new Wall(350, 600, 350, 40));
@@ -195,7 +205,15 @@ void nextMap() {
     walls.add(new Wall(475, 650, 300, 40));
     walls.add(new Wall(175, 650, 100, 40));
   } else if (map == M7) {
+    walls.add(new Wall(250, height/2, 40, 600));
+    walls.add(new Wall(500, height/2, 40, 600));
+    walls.add(new Wall(width/2, 300, 40, 40));
+    walls.add(new Wall(width/2, height/2, 40, 40));
+    walls.add(new Wall(width/2, 700, 40, 40));
   } else if (map == M8) {
+    walls.add(new Wall(250, 700, 40, 150));
+    walls.add(new Wall(500, 700, 40, 150));
+    walls.add(new Wall(width/2, 400, 300, 40));
   } else if (map == M9) {
     walls.add(new Wall(320, 320, 100, 40));
     walls.add(new Wall(430, 680, 100, 40));
