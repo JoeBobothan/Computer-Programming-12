@@ -9,22 +9,21 @@ class Mover {
 
   //constructor
   Mover() {
-    d = 50;
+    d = 0;
     f = color(255, 50);
+    f = color(random(0, 255), random(0, 255), random(0, 255), 50);
     position = new PVector(random(d/2, width-d/2), random(d/2, height-d/2));
     velocity = PVector.random2D().setMag(random(1, 2));
+    velocity.setMag(0);
   }
   
   Mover(float x, float y) {
-    d = 5;
-    f = color(255, 50);
+    this();
     position = new PVector(x, y);
-    velocity = PVector.random2D().setMag(random(1, 2));
   }
 
   //behaviour functions
   void show() {
-    stroke(0);
     fill(f);
     noStroke();
     circle(position.x, position.y, d);
@@ -39,10 +38,11 @@ class Mover {
   void showConnections(ArrayList<Mover> movers) {
     for (Mover m : movers) {
       float dist = PVector.dist(position, m.position);
-      float connectionDist = 150;
       if (dist <= connectionDist) {
         float a = map(dist, 0, connectionDist, 128, 0);
-        stroke(255, a);
+        //stroke(255, a);
+        stroke(red(f), green(f), blue(f), a);
+        //stroke(random(0, 255), random(0, 255), random(0, 255), a);
         strokeWeight(2);
         line(position.x, position.y, m.position.x, m.position.y);
       }

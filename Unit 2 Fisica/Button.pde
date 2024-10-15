@@ -35,6 +35,11 @@ class Button {
     if (mouseX > x-w/2 && mouseX < x+w/2 && mouseY > y-h/2 && mouseY < y+h/2) return true;
     else return false;
   }
+  void invertColours() {
+    color placeHolder = normal;
+    highlight = normal;
+    normal = placeHolder;
+  }
 
   void show() {
     drawRect();
@@ -62,7 +67,7 @@ class Button {
       fill(highlight);
     }
     if (img == null) {
-      textSize(w/4);
+      textSize(w/5);
       text(text, x, y);
     } else {
       image(img, x, y, w, h);

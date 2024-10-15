@@ -1,9 +1,13 @@
 ArrayList<Mover> movers;
-int count = 100;
+int count = 0;
+boolean centerHeld = false;
+float connectionDist = 150;
 
 void setup() {
-  //size(600, 600);
+  //size(960, 1080);
+  //size(640, 360);
   fullScreen();
+  surface.setResizable(true);
   movers = new ArrayList<Mover>();
   for (int i = 0; i < count; i++) {
     movers.add(new Mover());
@@ -24,8 +28,21 @@ void draw() {
       movers.remove(i);
     } else i++;
   }
+  if (centerHeld) {
+    fill(255, 50);
+    stroke(255);
+    strokeWeight(2);
+    circle(mouseX, mouseY, connectionDist*2);
+    line(mouseX, mouseY+connectionDist, mouseX, mouseY-connectionDist);
+    line(mouseX, mouseY+connectionDist, mouseX, mouseY-connectionDist);
+  }
 }
 
 void mousePressed() {
   if (mouseButton == LEFT) movers.add(new Mover(mouseX, mouseY));
+  if (mouseButton == CENTER) centerHeld = true;
+}
+
+void mouseReleased() {
+  if (mouseButton == CENTER) centerHeld = false;
 }
