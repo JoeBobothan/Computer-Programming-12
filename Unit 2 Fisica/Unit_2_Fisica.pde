@@ -1,8 +1,3 @@
-/*
- Create two buttons and place them on the screen in front of the FBodies.
- Clicking on one button should turn on/off the world's gravity.
- Clicking on the other button should turn on/off the adding of new FBodies to the world.
- */
 import fisica.*;
 
 Button[] buttons;
@@ -41,8 +36,8 @@ void setup() {
   textAlign(CENTER, CENTER);
   rectMode(CENTER);
   buttons = new Button[2];
-  buttons[0] = new Button("Gravity", 60, height-60, 100, 100, brown, yellow);
-  buttons[1] = new Button("Objects", width-60, height-60, 100, 100, red, yellow);
+  buttons[0] = new Button("Gravity", 60, height-60, 100, 100, red, green);
+  buttons[1] = new Button("Objects", width-60, height-60, 100, 100, red, green);
 
   //load resources
   redBird = loadImage("red-bird.png");
@@ -148,9 +143,13 @@ void draw() {
   println("x: " + mouseX + " y: " + mouseY);
   background(blue);
   click();
-  if (buttons[0].clicked) gravity = !gravity;
+  if (buttons[0].clicked) {
+    gravity = !gravity;
+    //buttons[0].invertColours();
+    buttons[0].invertColours = !buttons[0].invertColours;
+  }
   if (gravity) {
-    world.setGravity(0, 9.81);
+    world.setGravity(0, 900);
     //ArrayList<FBody> bodies = world.getBodies(); // Get all bodies in the world
     //for (FBody body : bodies) {
     //  if (body.isSleeping()) {
@@ -159,7 +158,11 @@ void draw() {
     //}
   }
   if (!gravity) world.setGravity(0, 0);
-  if (buttons[1].clicked) generateObjects = !generateObjects;
+  if (buttons[1].clicked) {
+    generateObjects = !generateObjects;
+    //buttons[1].invertColours();
+    buttons[1].invertColours = !buttons[1].invertColours;
+  }
   buttons[0].show();
   buttons[1].show();
   if (frameCount % 20 == 0 && generateObjects) {  //Every 20 frames ...
@@ -169,10 +172,10 @@ void draw() {
     makeBird();
   }
   fill(0);
-  if (gravity) text("gravity", mouseX, mouseY - 10);
-  if (!gravity) text("no gravity", mouseX, mouseY - 10);
-  if (generateObjects) text("objects", mouseX, mouseY + 10);
-  if (!generateObjects) text("no objects", mouseX, mouseY + 10);
+  //if (gravity) text("gravity", mouseX, mouseY - 10);
+  //if (!gravity) text("no gravity", mouseX, mouseY - 10);
+  //if (generateObjects) text("objects", mouseX, mouseY + 10);
+  //if (!generateObjects) text("no objects", mouseX, mouseY + 10);
 
   x += 5;
   x1 += 3;
