@@ -18,22 +18,40 @@ void makeFloor() {
 }
 
 void makePlayers() {
-  leftPlayer = new FBox(100, 100);
+  //leftPlayer = new FPoly(100, 100);
+  leftPlayer = new FPoly();
+  leftPlayer.vertex(-50, -25);
+  leftPlayer.vertex(-25, -50);
+  leftPlayer.vertex(25, -50);
+  leftPlayer.vertex(50, -25);
+  leftPlayer.vertex(50, 50);
+  leftPlayer.vertex(-50, 50);
+  
   leftPlayer.setPosition(width/4, 599);
   leftPlayer.setFillColor(red);
   leftPlayer.setNoStroke();
   leftPlayer.setDensity(10);
   leftPlayer.setFriction(0.1);
-  leftPlayer.setRestitution(0.25);
+  leftPlayer.setRestitution(0);
+  leftPlayer.setRotatable(false);
   world.add(leftPlayer);
 
-  rightPlayer = new FBox(100, 100);
+  //rightPlayer = new FPoly(100, 100);
+  rightPlayer = new FPoly();
+  rightPlayer.vertex(-50, -25);
+  rightPlayer.vertex(-25, -50);
+  rightPlayer.vertex(25, -50);
+  rightPlayer.vertex(50, -25);
+  rightPlayer.vertex(50, 50);
+  rightPlayer.vertex(-50, 50);
+  
   rightPlayer.setPosition(width*3/4, 599);
   rightPlayer.setFillColor(blue);
   rightPlayer.setNoStroke();
   rightPlayer.setDensity(10);
   rightPlayer.setFriction(0.1);
-  rightPlayer.setRestitution(0.25);
+  rightPlayer.setRestitution(0);
+  rightPlayer.setRotatable(false);
   world.add(rightPlayer);
 }
 
@@ -44,6 +62,7 @@ void makeNet() {
   net.setNoStroke();
   net.setStatic(true);
   net.setFriction(0);
+  net.setRestitution(0);
   world.add(net);
 }
 

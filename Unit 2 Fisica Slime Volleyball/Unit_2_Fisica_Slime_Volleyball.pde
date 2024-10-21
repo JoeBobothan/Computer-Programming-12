@@ -27,8 +27,8 @@ int rightScore;
 FWorld world;
 FBox leftPlatform;
 FBox rightPlatform;
-FBox leftPlayer;
-FBox rightPlayer;
+FPoly leftPlayer;
+FPoly rightPlayer;
 FBox net;
 FCircle ball;
 
@@ -48,12 +48,26 @@ void draw() {
     leftScore++;
     reset();
   }
+  PVector ballVelocity = new PVector(ball.getVelocityX(), ball.getVelocityY());
+  if (ballVelocity.mag() > 1000) {
+    ballVelocity.limit(1000);
+    ball.setVelocity(ballVelocity.x, ballVelocity.y);
+  }
   world.step();
+  if (leftPlayer.getX() > width/2 - 60) leftPlayer.setPosition(width/2 - 60, leftPlayer.getY());
+  if (rightPlayer.getX() < width/2 + 60) rightPlayer.setPosition(width/2 + 60, rightPlayer.getY());
   world.draw();
   fill(0);
   textSize(30);
   text(leftScore, width/2 - 100, 50);
   text(rightScore, width/2 + 100, 50);
+  textSize(10);
+  textAlign(CENTER, CENTER);
+  if (wKey) text("w held", mouseX, mouseY-25);
+  if (aKey) text("a held", mouseX-35, mouseY-10);
+  if (sKey) text("s held", mouseX, mouseY-10);
+  if (dKey) text("d held", mouseX+35, mouseY-10);
+  //text(ballVelocity.mag(), width/2, 30);
 }
 
 void createWorld() {
@@ -61,6 +75,7 @@ void createWorld() {
   world = new FWorld();
   world.setGravity(0, 981);
   world.setEdges();
+  world.setEdgesRestitution(0.1);
   makeFloor();
   makePlayers();
   makeNet();
@@ -74,4 +89,18 @@ void reset() {
   ball.setPosition(width/2, 0);
   leftPlatform.setPosition(width/4, 700);
   rightPlatform.setPosition(width*3/4, 700);
+
+  net.setVelocity(0, 0);
+  leftPlayer.setVelocity(0, 0);
+  rightPlayer.setVelocity(0, 0);
+  ball.setVelocity(0, 0);
+  leftPlatform.setVelocity(0, 0);
+  rightPlatform.setVelocity(0, 0);
+
+  net.resetForces();
+  leftPlayer.resetForces();
+  rightPlayer.resetForces();
+  ball.resetForces();
+  leftPlatform.resetForces();
+  rightPlatform.resetForces();
 }
