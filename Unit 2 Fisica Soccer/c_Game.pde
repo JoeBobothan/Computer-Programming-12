@@ -3,29 +3,29 @@ void game() {
   handlePlayerInput();
   world.step();
   world.draw();
-  float left_x = leftPlayer.getX();
-  float left_y = leftPlayer.getY();
-  float right_x = rightPlayer.getX();
-  float right_y = rightPlayer.getY();
-  push();
-  strokeWeight(3);
-  translate(left_x, left_y);
-  rotate(leftPlayer.getRotation());
-  line(0, 0, 24, 0);
-  pop();
-  push();
-  strokeWeight(3);
-  translate(right_x, right_y);
-  rotate(rightPlayer.getRotation());
-  line(0, 0, 24, 0);
-  pop();
-  textSize(10);
-  //text(str(left_x) + "   " + str(left_y), left_x, left_y - 50);
-  //if (wKey) text("w held", mouseX, mouseY-25);
-  //if (aKey) text("a held", mouseX-35, mouseY-10);
-  //if (sKey) text("s held", mouseX, mouseY-10);
-  //if (dKey) text("d held", mouseX+35, mouseY-10);
-
+  for (int i = 0; i < 3; i++) {
+    leftPlayers[i].setFillColor(red);
+    rightPlayers[i].setFillColor(blue);
+    float left_x = leftPlayers[i].getX();
+    float left_y = leftPlayers[i].getY();
+    float right_x = rightPlayers[i].getX();
+    float right_y = rightPlayers[i].getY();
+    push();
+    strokeWeight(3);
+    translate(left_x, left_y);
+    rotate(leftPlayers[i].getRotation());
+    line(0, 0, playerD/2, 0);
+    pop();
+    push();
+    strokeWeight(3);
+    translate(right_x, right_y);
+    rotate(rightPlayers[i].getRotation());
+    line(0, 0, playerD/2, 0);
+    pop();
+    textSize(10);
+  }
+  leftPlayers[leftControlling].setFillColor(lerpColor(red, white, 0.25));
+  rightPlayers[rightControlling].setFillColor(lerpColor(blue, white, 0.25));
   drawScore();
 
   // win criteria: 10 goals

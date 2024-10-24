@@ -1,30 +1,27 @@
 //setGrabbable(false)
 
 void makePlayers() {
-  leftPlayer = new FCircle(48);
+  leftPlayers[0] = makePlayer(red, width/2 - 500, height/2);
+  leftPlayers[1] = makePlayer(red, width/2 - 500, height/2);
+  leftPlayers[2] = makePlayer(red, width/2 - 500, height/2);
+  rightPlayers[0] = makePlayer(blue, width/2 + 500, height/2);
+  rightPlayers[1] = makePlayer(blue, width/2 + 500, height/2);
+  rightPlayers[2] = makePlayer(blue, width/2 + 500, height/2);
+}
 
-  leftPlayer.setPosition(width/2 - 500, height/2);
-  leftPlayer.setFillColor(red);
-  //leftPlayer.setNoStroke();
-  leftPlayer.setDensity(10);
-  leftPlayer.setFriction(10);
-  leftPlayer.setRestitution(0);
-  leftPlayer.setDamping(5);
-  leftPlayer.setRotatable(false);
-  world.add(leftPlayer);
-
-  rightPlayer = new FCircle(48);
-
-  rightPlayer.setPosition(width/2 + 500, height/2);
-  rightPlayer.setFillColor(blue);
-  //rightPlayer.setNoStroke();
-  rightPlayer.setDensity(10);
-  rightPlayer.setFriction(10);
-  rightPlayer.setRestitution(0);
-  rightPlayer.setDamping(5);
-  rightPlayer.setRotatable(false);
-  rightPlayer.setRotation(PI);
-  world.add(rightPlayer);
+FCircle makePlayer(color c, float x, float y) {
+  FCircle player = new FCircle(playerD);
+  player.setPosition(x, y);
+  player.setFillColor(c);
+  //player.setNoStroke();
+  player.setDensity(10);
+  player.setFriction(0.1);
+  player.setRestitution(0);
+  player.setDamping(5);
+  player.setRotatable(false);
+  if (c == blue) player.setRotation(PI);
+  world.add(player);
+  return player;
 }
 
 void makeNets() {

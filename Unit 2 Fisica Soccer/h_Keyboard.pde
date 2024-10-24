@@ -14,8 +14,20 @@ void keyReleased() {
   if (key == 'a' || key == 'A') aKey = false;
   if (key == 's' || key == 'S') sKey = false;
   if (key == 'd' || key == 'D') dKey = false;
+  if (key == 'q' || key == 'Q') nextLeftPlayer();
   if (keyCode == UP) upKey = false;
   if (keyCode == LEFT) leftKey = false;
   if (keyCode == DOWN) downKey = false;
   if (keyCode == RIGHT) rightKey = false;
+  if (key == 'p' || key == 'P') nextRightPlayer();
+}
+
+void nextLeftPlayer() {
+  leftControlling++;
+  if (leftControlling == 3) leftControlling = 0;
+}
+
+void nextRightPlayer() {
+  rightControlling++;
+  if (rightControlling == 3) rightControlling = 0;
 }
