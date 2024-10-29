@@ -16,12 +16,11 @@ void game() {
       newPossessor = rightPlayers[i];
     }
   }
-  if (ballChangeCooldown <= 0 && hasBall != newPossessor && closest < 100) {
+  if (ballChangeCooldown <= 0 && hasBall != newPossessor && closest < 75) {
     changePossession(newPossessor);
   }
   if (hasBall != null) {
     updateBallPositionWithPlayer();
-    hasBall.setFillColor(black);
   }
   world.draw();
   for (int i = 0; i < 3; i++) {
@@ -35,17 +34,47 @@ void game() {
     strokeWeight(3);
     translate(left_x, left_y);
     rotate(leftPlayers[i].getRotation());
-    line(0, 0, playerD/2, 0);
+    line(-playerD/3, 0, playerD/3, 0);
+    line(playerD/3, 0, 0, -playerD/4);
+    line(playerD/3, 0, 0, playerD/4);
     pop();
     push();
     strokeWeight(3);
     translate(right_x, right_y);
     rotate(rightPlayers[i].getRotation());
-    line(0, 0, playerD/2, 0);
+    line(-playerD/3, 0, playerD/3, 0);
+    line(playerD/3, 0, 0, -playerD/4);
+    line(playerD/3, 0, 0, playerD/4);
     pop();
     textSize(10);
   }
+
+  // draws a star (or any shape really) on the play with the ball if it is in possession
+  
+  //if (hasBall != null) {
+  //  push();
+  //  stroke(lerpColor(yellow, black, 0.25), 50);
+  //  fill(yellow, 50);
+  //  translate(hasBall.getX(), hasBall.getY());
+  //  rotate(hasBall.getRotation());
+  //  PVector v = new PVector(1, 0);
+  //  beginShape();
+  //  for (int i = 0; i < 5; i++) {
+  //    v.setMag(playerD/2);
+  //    vertex(v.x, v.y);
+  //    v.rotate(PI/5);
+  //    v.setMag(10);
+  //    vertex(v.x, v.y);
+  //    v.rotate(PI/5);
+  //  }
+  //  endShape();
+  //  pop();
+  //}
+
+  if (isTouching(ball, leftNet)) score(true);
+  if (isTouching(ball, rightNet)) score(false);
   drawScore();
+  
   // win criteria: 10 goals
   if (blueScore >= 10 || redScore >= 10) {
     if (blueScore > redScore) {
@@ -56,8 +85,8 @@ void game() {
     mode = WIN;
   }
 
-  text(ballChangeCooldown, mouseX, mouseY - 30);
-  if (hasBall == null) text("Nobody has the Ball", mouseX, mouseY + 30);
+  //text(ballChangeCooldown, mouseX, mouseY - 30);
+  //if (hasBall == null) text("Nobody has the Ball", mouseX, mouseY + 30);
 }
 
 void drawScore() {
@@ -79,9 +108,6 @@ void gameClicks() {
 }
 
 float distToBall(FBody player) {
-  //float direction = player.getRotation();
-  //PVector forwards = new PVector(1, 0).rotate(direction).setMag((playerD+ballD)/2);
-  //float distance = dist(ball.getX(), ball.getY(), player.getX() + forwards.x, player.getY() + forwards.y);
   float distance = dist(ball.getX(), ball.getY(), player.getX(), player.getY());
   return distance;
 }
@@ -107,3 +133,29 @@ void kickBall(float force) {
     hasBall = null;
   }
 }
+
+//float getFPolyWidth(FPoly poly) {
+//  ArrayList<Vec2> vertices = poly.getVertices();
+//  float minX = Float.MAX_VALUE;
+//  float maxX = Float.MIN_VALUE;
+
+//  for (Fisica.FVector vertex : vertices) {
+//    if (vertex.x < minX) minX = vertex.x;
+//    if (vertex.x > maxX) maxX = vertex.x;
+//  }
+  
+//  return maxX - minX;
+//}
+
+//float getFPolyHeight(FPoly poly) {
+//  ArrayList<Vec2> vertices = poly.getVertices();
+//  float minY = Float.MAX_VALUE;
+//  float maxY = Float.MIN_VALUE;
+
+//  for (Fisica.FVector vertex : vertices) {
+//    if (vertex.y < minY) minY = vertex.y;
+//    if (vertex.y > maxY) maxY = vertex.y;
+//  }
+  
+//  return maxY - minY;
+//}

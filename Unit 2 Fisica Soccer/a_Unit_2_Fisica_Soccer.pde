@@ -42,6 +42,8 @@ int ballD = 24;
 int ballChangeCooldown = 0;
 FBody newPossessor;
 float closest = 1000;
+ArrayList<PVector> leftNetVertices;
+ArrayList<PVector> rightNetVertices;
 
 //Player Controller
 int leftControlling = 0;
@@ -54,8 +56,10 @@ final int INTRO = 0;
 final int GAME = 1;
 final int WIN = 2;
 final int PAUSE = 3;
+final int FREEZE = 4;
 boolean enterPauseMode = false;
 boolean enterWinMode = false;
+int freeze = 0;
 
 //Score
 int redScore = 0;
@@ -64,6 +68,24 @@ boolean blueWins = false;
 
 void setup() {
   fullScreen();
+  leftNetVertices = new ArrayList<PVector>();
+  rightNetVertices = new ArrayList<PVector>();
+  leftNetVertices.add(new PVector(-75, -250));
+  leftNetVertices.add(new PVector(75, -250));
+  leftNetVertices.add(new PVector(75, -225));
+  leftNetVertices.add(new PVector(-50, -225));
+  leftNetVertices.add(new PVector(-50, 225));
+  leftNetVertices.add(new PVector(75, 225));
+  leftNetVertices.add(new PVector(75, 250));
+  leftNetVertices.add(new PVector(-75, 250));
+  rightNetVertices.add(new PVector(75, -250));
+  rightNetVertices.add(new PVector(-75, -250));
+  rightNetVertices.add(new PVector(-75, -225));
+  rightNetVertices.add(new PVector(50, -225));
+  rightNetVertices.add(new PVector(50, 225));
+  rightNetVertices.add(new PVector(-75, 225));
+  rightNetVertices.add(new PVector(-75, 250));
+  rightNetVertices.add(new PVector(75, 250));
   createWorld();
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
@@ -78,6 +100,8 @@ void draw() {
     win();
   } else if (mode == PAUSE) {
     pause();
+  } else if (mode == FREEZE) {
+    freeze();
   } else {
     println("Invalid mode");
     noLoop();
@@ -85,6 +109,32 @@ void draw() {
 }
 
 void score(boolean blueScored) {
+  if (blueScored) blueScore++;
+  else redScore++;
+  freeze = 100;
+  mode = FREEZE;
+  //leftPlayers[0].setPosition(width/2 - 500, height/2);
+  //leftPlayers[1].setPosition(width/2 - 750, height/2 - 75);
+  //leftPlayers[2].setPosition(width/2 - 750, height/2 + 75);
+  //rightPlayers[0].setPosition(width/2 + 500, height/2);
+  //rightPlayers[1].setPosition(width/2 + 750, height/2 - 75);
+  //rightPlayers[2].setPosition(width/2 + 750, height/2 + 75);
+  //leftPlayers[0].setRotation(0);
+  //leftPlayers[1].setRotation(0);
+  //leftPlayers[2].setRotation(0);
+  //rightPlayers[0].setRotation(PI);
+  //rightPlayers[1].setRotation(PI);
+  //rightPlayers[2].setRotation(PI);
+  //ball.setPosition(width/2, height/2);
+  world.clear();
+  world.setEdges();
+  world.setEdgesRestitution(1);
+  makePlayers();
+  makeNets();
+  makeBall();
+  wKey = aKey = sKey = dKey = upKey = leftKey = downKey = rightKey = false;
+  hasBall = null;
+  game();
 }
 
 void createWorld() {
