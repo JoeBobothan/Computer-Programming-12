@@ -19,21 +19,6 @@ boolean isTouching(FBody object, FBody contact) {
   return false;
 }
 
-void handlePlayerInput(int a) {
-  float left_vx = leftPlayers[leftControlling].getVelocityX();
-  float left_vy = leftPlayers[leftControlling].getVelocityY();
-  if (wKey) leftPlayers[leftControlling].setVelocity(left_vx, -500);
-  if (aKey) leftPlayers[leftControlling].setVelocity(-500, left_vy);
-  if (sKey) leftPlayers[leftControlling].setVelocity(left_vx, 500);
-  if (dKey) leftPlayers[leftControlling].setVelocity(500, left_vy);
-  float right_vx = rightPlayers[rightControlling].getVelocityX();
-  float right_vy = rightPlayers[rightControlling].getVelocityY();
-  if (upKey) rightPlayers[rightControlling].setVelocity(right_vx, -500);
-  if (leftKey) rightPlayers[rightControlling].setVelocity(-500, right_vy);
-  if (downKey) rightPlayers[rightControlling].setVelocity(right_vx, 500);
-  if (rightKey) rightPlayers[rightControlling].setVelocity(500, right_vy);
-}
-
 PVector getVelocity(FBody body) {
   float vx = body.getVelocityX();
   float vy = body.getVelocityY();
@@ -48,9 +33,7 @@ void rotateVelocity(FBody body, float rotation) {
 
 void goForwards(FBody body, float mag) {
   float angle = body.getRotation();
-
   float vx = cos(angle);
   float vy = sin(angle);
-
   body.setVelocity(vx * mag, vy * mag);
 }

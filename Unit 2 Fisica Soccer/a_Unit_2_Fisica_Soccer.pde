@@ -38,10 +38,15 @@ int playerD = 48;
 FPoly leftNet;
 FPoly rightNet;
 FCircle ball;
+int ballD = 24;
+int ballChangeCooldown = 0;
+FBody newPossessor;
+float closest = 1000;
 
 //Player Controller
 int leftControlling = 0;
 int rightControlling = 0;
+FBody hasBall = null;
 
 //Mode Framework
 int mode;
@@ -80,9 +85,6 @@ void draw() {
 }
 
 void score(boolean blueScored) {
-  //ballX = width/2;
-  //ballD = 35;
-  //ballY = height/2;
 }
 
 void createWorld() {

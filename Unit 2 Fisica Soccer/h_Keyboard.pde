@@ -15,6 +15,7 @@ void keyReleased() {
   if (key == 's' || key == 'S') sKey = false;
   if (key == 'd' || key == 'D') dKey = false;
   if (key == 'q' || key == 'Q') nextLeftPlayer();
+  if (key == 'e' || key == 'E') kickBall(1);
   if (keyCode == UP) upKey = false;
   if (keyCode == LEFT) leftKey = false;
   if (keyCode == DOWN) downKey = false;

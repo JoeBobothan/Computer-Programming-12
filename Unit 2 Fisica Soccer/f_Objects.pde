@@ -61,7 +61,7 @@ void makeNets() {
 }
 
 void makeBall() {
-  ball = new FCircle(24);
+  ball = new FCircle(ballD);
   ball.setPosition(width/2, height/2);
   ball.setRestitution(1);
   world.add(ball);
