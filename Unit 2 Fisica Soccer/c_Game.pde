@@ -50,7 +50,7 @@ void game() {
   }
 
   // draws a star (or any shape really) on the play with the ball if it is in possession
-  
+
   //if (hasBall != null) {
   //  push();
   //  stroke(lerpColor(yellow, black, 0.25), 50);
@@ -70,11 +70,14 @@ void game() {
   //  endShape();
   //  pop();
   //}
-
-  if (isTouching(ball, leftNet)) score(true);
-  if (isTouching(ball, rightNet)) score(false);
+  float x = ball.getX() - leftNet.getX();
+  float y = ball.getY() - leftNet.getY();
+  if (isTouching(ball, leftNet) && x > leftMinX + 25 && x < leftMaxX - 25 && y > leftMinY + 25 && y < leftMaxY - 25) score(true);
+  x = ball.getX() - rightNet.getX();
+  y = ball.getY() - rightNet.getY();
+  if (isTouching(ball, rightNet) && x > rightMinX + 25 && x < rightMaxX - 25 && y > rightMinY + 25 && y < rightMaxY - 25) score(false);
   drawScore();
-  
+
   // win criteria: 10 goals
   if (blueScore >= 10 || redScore >= 10) {
     if (blueScore > redScore) {
@@ -84,9 +87,14 @@ void game() {
     }
     mode = WIN;
   }
-
-  //text(ballChangeCooldown, mouseX, mouseY - 30);
-  //if (hasBall == null) text("Nobody has the Ball", mouseX, mouseY + 30);
+  
+  //float x = mouseX - leftNet.getX();
+  //float y = mouseY - leftNet.getY();
+  //if (x > leftMinX && x < leftMaxX && y > leftMinY && y < leftMaxY) {
+  //  text("in left goal", mouseX, mouseY);
+  //  //text(ballChangeCooldown, mouseX, mouseY - 30);
+  //  //if (hasBall == null) text("Nobody has the Ball", mouseX, mouseY + 30);
+  //}
 }
 
 void drawScore() {
@@ -133,29 +141,3 @@ void kickBall(float force) {
     hasBall = null;
   }
 }
-
-//float getFPolyWidth(FPoly poly) {
-//  ArrayList<Vec2> vertices = poly.getVertices();
-//  float minX = Float.MAX_VALUE;
-//  float maxX = Float.MIN_VALUE;
-
-//  for (Fisica.FVector vertex : vertices) {
-//    if (vertex.x < minX) minX = vertex.x;
-//    if (vertex.x > maxX) maxX = vertex.x;
-//  }
-  
-//  return maxX - minX;
-//}
-
-//float getFPolyHeight(FPoly poly) {
-//  ArrayList<Vec2> vertices = poly.getVertices();
-//  float minY = Float.MAX_VALUE;
-//  float maxY = Float.MIN_VALUE;
-
-//  for (Fisica.FVector vertex : vertices) {
-//    if (vertex.y < minY) minY = vertex.y;
-//    if (vertex.y > maxY) maxY = vertex.y;
-//  }
-  
-//  return maxY - minY;
-//}

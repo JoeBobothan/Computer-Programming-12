@@ -29,14 +29,6 @@ void makeNets() {
   for (PVector v : leftNetVertices) {
     leftNet.vertex(v.x, v.y);
   }
-  //leftNet.vertex(-75, -250);
-  //leftNet.vertex(75, -250);
-  //leftNet.vertex(75, -225);
-  //leftNet.vertex(-50, -225);
-  //leftNet.vertex(-50, 225);
-  //leftNet.vertex(75, 225);
-  //leftNet.vertex(75, 250);
-  //leftNet.vertex(-75, 250);
   leftNet.setPosition(width/2 - 850, height/2);
   leftNet.setFillColor(white);
   leftNet.setNoStroke();
@@ -49,14 +41,6 @@ void makeNets() {
   for (PVector v : rightNetVertices) {
     rightNet.vertex(v.x, v.y);
   }
-  //rightNet.vertex(75, -250);
-  //rightNet.vertex(-75, -250);
-  //rightNet.vertex(-75, -225);
-  //rightNet.vertex(50, -225);
-  //rightNet.vertex(50, 225);
-  //rightNet.vertex(-75, 225);
-  //rightNet.vertex(-75, 250);
-  //rightNet.vertex(75, 250);
   rightNet.setPosition(width/2 + 850, height/2);
   rightNet.setFillColor(white);
   rightNet.setNoStroke();
@@ -71,4 +55,38 @@ void makeBall() {
   ball.setPosition(width/2, height/2);
   ball.setRestitution(1);
   world.add(ball);
+}
+
+void netVertices() {
+  leftNetVertices.add(new PVector(-75, -250));
+  leftNetVertices.add(new PVector(75, -250));
+  leftNetVertices.add(new PVector(75, -225));
+  leftNetVertices.add(new PVector(-50, -225));
+  leftNetVertices.add(new PVector(-50, 225));
+  leftNetVertices.add(new PVector(75, 225));
+  leftNetVertices.add(new PVector(75, 250));
+  leftNetVertices.add(new PVector(-75, 250));
+  rightNetVertices.add(new PVector(75, -250));
+  rightNetVertices.add(new PVector(-75, -250));
+  rightNetVertices.add(new PVector(-75, -225));
+  rightNetVertices.add(new PVector(50, -225));
+  rightNetVertices.add(new PVector(50, 225));
+  rightNetVertices.add(new PVector(-75, 225));
+  rightNetVertices.add(new PVector(-75, 250));
+  rightNetVertices.add(new PVector(75, 250));
+}
+
+void verticesWH() {
+  for (PVector c : leftNetVertices) {
+    if (c.x > leftMaxX) leftMaxX = c.x;
+    if (c.x < leftMinX) leftMinX = c.x;
+    if (c.y > leftMaxY) leftMaxY = c.y;
+    if (c.y < leftMinY) leftMinY = c.y;
+  }
+  for (PVector c : rightNetVertices) {
+    if (c.x > rightMaxX) rightMaxX = c.x;
+    if (c.x < rightMinX) rightMinX = c.x;
+    if (c.y > rightMaxY) rightMaxY = c.y;
+    if (c.y < rightMinY) rightMinY = c.y;
+  }
 }
