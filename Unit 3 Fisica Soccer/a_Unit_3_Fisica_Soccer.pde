@@ -1,7 +1,7 @@
 // Connor Tsoi
 // Computer Programming 12
 // Block 1-4
-// October 22, 2024
+// November 4, 2024
 
 import fisica.*;
 
@@ -78,6 +78,7 @@ void setup() {
   setUpWorld();
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
+
 }
 
 void draw() {
