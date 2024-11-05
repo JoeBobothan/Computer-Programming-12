@@ -6,14 +6,15 @@
 import fisica.*;
 
 //Palette
-color red = color(255, 0, 0); //#FF0000 //
-color green = color(0, 255, 0); //#00FF00 //
-color blue = color(0, 0, 255); //#0000FF //
+color red = color(255, 0, 0); //#FF0000 // Lava?
+color green = color(0, 255, 0); //#00FF00 // Tree Leaves
+color blue = color(0, 0, 255); //#0000FF // Water
 color cyan = color(0, 255, 255); //#00FFFF // Ice
 color magenta = color(255, 0, 255); //#FF00FF //
-color yellow = color(255, 255, 0); //#FFFF00 //
+color yellow = color(255, 255, 0); //#FFFF00 // Bounce
 color black = color(0); //#000000 // Ground
 color white = color(255); //#FFFFFF //
+color brown = color(154, 102, 51); // Tree Trunk
 
 PImage map;
 float zoom = 1.5;
@@ -50,11 +51,6 @@ final int FREEZE = 4;
 boolean enterPauseMode = false;
 boolean enterWinMode = false;
 int freeze = 0;
-
-//Score
-int redScore = 0;
-int blueScore = 0;
-boolean blueWins = false;
 
 void setup() {
   fullScreen();
@@ -103,7 +99,7 @@ void loadMap(PImage img) {
         b.setFriction(0);
         b.setName("ice");
       }
-      world.add(b);
+      if (alpha(c) != 0) world.add(b);
     }
   }
 }
