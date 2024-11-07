@@ -10,6 +10,8 @@ void keyPressed() {
   if (keyCode == LEFT) leftKey = true;
   if (keyCode == DOWN) downKey = true;
   if (keyCode == RIGHT) rightKey = true;
+  if (key == '[') zoomOut = true;
+  if (key == ']') zoomIn = true;
 }
 
 void keyReleased() {
@@ -24,4 +26,6 @@ void keyReleased() {
   if (keyCode == LEFT) leftKey = false;
   if (keyCode == DOWN) downKey = false;
   if (keyCode == RIGHT) rightKey = false;
+  if (key == '[') zoomOut = false;
+  if (key == ']') zoomIn = false;
 }

@@ -18,6 +18,8 @@ color brown = color(154, 102, 51); // Tree Trunk
 
 PImage map;
 float zoom = 1.5;
+boolean zoomOut = false;
+boolean zoomIn = false;
 int gridSize = 32;
 
 //Keyboard Booleans
@@ -38,10 +40,12 @@ boolean rightKey = false;
 //Fisica
 FWorld world;
 FPlayer leftPlayer;
-FPlayer rightPlayer;
+float tolerance = 1; // For some reason player is always a few pixels away from the wall
+
+ArrayList<FBox>[][] gridTiles = new ArrayList[8][8];
 
 //Mode Framework
-int mode;
+int mode = 1;
 final int INTRO = 0;
 final int GAME = 1;
 final int WIN = 2;
@@ -82,6 +86,12 @@ void loadMap(PImage img) {
   world = new FWorld(-2000, -2000, 2000, 2000);
   world.setGravity(0, 981);
 
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      gridTiles[i][j] = new ArrayList<FBox>();
+    }
+  }
+
   for (int y = 0; y < map.height; y++) {
     for (int x = 0; x < map.width; x++) {
       color c = map.get(x, y);
@@ -99,6 +109,9 @@ void loadMap(PImage img) {
         b.setFriction(0);
         b.setName("ice");
       }
+      int gridX = x / 4;  // Calculate grid square X (e.g., 0-7)
+      int gridY = y / 4;  // Calculate grid square Y (e.g., 0-7)
+      gridTiles[gridX][gridY].add(b);  // Add the ground tile to the correct grid
       if (alpha(c) != 0) world.add(b);
     }
   }

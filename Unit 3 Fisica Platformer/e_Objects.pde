@@ -50,7 +50,6 @@ boolean isOnGround(FBody player) {
 
 boolean isTouchingLeftWall(FBody player) {
   ArrayList<FContact> contactList = player.getContacts(); // Get list of contacts of player
-  float tolerance = 1; // For some reason player is always 1 pixel away from the wall
   for (FContact c : contactList) { // For every FContact, name it c and run
     FBody b = c.getBody1(); // Get the FBody from the contact
     if (b.getName() != null && b.getName().equals("ground")) {
@@ -70,7 +69,6 @@ boolean isTouchingLeftWall(FBody player) {
 
 boolean isTouchingRightWall(FBody player) {
   ArrayList<FContact> contactList = player.getContacts(); // Get list of contacts of player
-  float tolerance = 1; // For some reason player is always 1 pixel away from the wall
   for (FContact c : contactList) { // For every FContact, name it c and run
     FBody b = c.getBody1(); // Get the FBody from the contact
     if (b.getName() != null && b.getName().equals("ground")) {
@@ -81,6 +79,24 @@ boolean isTouchingRightWall(FBody player) {
         float playerRight = player.getX() + gridSize / 2;  // Right side of the player
         if (contactX >= playerLeft - tolerance && contactX <= playerRight + tolerance) {
           return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+boolean checkForGround(FBody player) {
+  int gridX = int(map(player.getX(), 0, 1024, 0, 8));
+  int gridY = int(map(player.getY(), 0, 1024, 0, 8));
+
+  for (int _x = -1; _x <= 1; _x++) {
+    for (int _y = -1; _y <= 1; _y++) {
+      int checkX = gridX + _x;
+      int checkY = gridY + _y;
+      if (checkX >= 0 && checkX < 8 && checkY >= 0 && checkY < 8) {
+        for (FBox b : gridTiles[checkX][checkY]) {
+          if (dist(player.getX(), player.getY(), b.getX(), b.getY()) < gridSize*1.5) return true;
         }
       }
     }
