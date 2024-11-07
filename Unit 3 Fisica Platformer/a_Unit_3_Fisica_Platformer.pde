@@ -39,7 +39,6 @@ boolean rightKey = false;
 FWorld world;
 FPlayer leftPlayer;
 FPlayer rightPlayer;
-int playerD = 48;
 
 //Mode Framework
 int mode;
@@ -92,6 +91,7 @@ void loadMap(PImage img) {
       if (c == black) {
         //b.attachImage(ground);
         b.setFriction(4);
+        //b.setRestitution(0.2);
         b.setName("ground");
       }
       if (c == cyan) {

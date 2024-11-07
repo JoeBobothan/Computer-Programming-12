@@ -1,21 +1,20 @@
 void game() {
   background(black);
   leftPlayer.act();
-  rightPlayer.act();
+  //rightPlayer.act();
   drawWorld();
-  fill(white);
-  textSize(25);
-  if (dKey && wKey) text("a & w held", width/2, height/2);
+  //fill(white, 153);
+  //square(width/2, height/2, gridSize*zoom);
 }
 
 void drawWorld() {
-  pushMatrix();
+  push();
   translate(width/2, height/2);
   scale(zoom);
-  translate(-leftPlayer.getX(), -leftPlayer.getY());
   world.step();
+  translate(-leftPlayer.getX(), -leftPlayer.getY());
   world.draw();
-  popMatrix();
+  pop();
 }
 
 void gameClicks() {
