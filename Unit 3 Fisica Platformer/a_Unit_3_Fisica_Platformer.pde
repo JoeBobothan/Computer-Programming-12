@@ -109,8 +109,10 @@ void loadMap(PImage img) {
         b.setFriction(0);
         b.setName("ice");
       }
-      int gridX = x / 4;  // Calculate grid square X (e.g., 0-7)
-      int gridY = y / 4;  // Calculate grid square Y (e.g., 0-7)
+      int gridX = int(map(x, 0, 1024, 0, 7));
+      int gridY = int(map(y, 0, 1024, 0, 7));
+      //int gridX = x / 4;  // Calculate grid square X (e.g., 0-7)
+      //int gridY = y / 4;  // Calculate grid square Y (e.g., 0-7)
       gridTiles[gridX][gridY].add(b);  // Add the ground tile to the correct grid
       if (alpha(c) != 0) world.add(b);
     }

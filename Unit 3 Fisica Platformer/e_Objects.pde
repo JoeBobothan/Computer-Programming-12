@@ -39,7 +39,7 @@ boolean isOnGround(FBody player) {
         float contactY = c.getY();  // Get the Y coordinate of the contact point
         float playerTop = player.getY() - gridSize / 2;  // Top of the player
         float playerBottom = player.getY() + gridSize / 2;  // Bottom of the player
-        if (contactY >= playerTop && contactY <= playerBottom) {
+        if (contactY >= playerTop  - tolerance && contactY <= playerBottom + tolerance) {
           return true;
         }
       }
@@ -87,8 +87,8 @@ boolean isTouchingRightWall(FBody player) {
 }
 
 boolean checkForGround(FBody player) {
-  int gridX = int(map(player.getX(), 0, 1024, 0, 8));
-  int gridY = int(map(player.getY(), 0, 1024, 0, 8));
+  int gridX = int(map(player.getX(), 0, 1024, 0, 7));
+  int gridY = int(map(player.getY(), 0, 1024, 0, 7));
 
   for (int _x = -1; _x <= 1; _x++) {
     for (int _y = -1; _y <= 1; _y++) {
@@ -96,7 +96,8 @@ boolean checkForGround(FBody player) {
       int checkY = gridY + _y;
       if (checkX >= 0 && checkX < 8 && checkY >= 0 && checkY < 8) {
         for (FBox b : gridTiles[checkX][checkY]) {
-          if (dist(player.getX(), player.getY(), b.getX(), b.getY()) < gridSize*1.5) return true;
+          b.setFillColor(red);
+          if (dist(player.getX(), player.getY(), b.getX(), b.getY()) < gridSize*1.5) ;//return true;
         }
       }
     }
