@@ -27,8 +27,8 @@ class FPlayer extends FBox {
       textSize(12);
       if (checkForGround(leftPlayer));
       //if (sKey) vyChange = 250;
-      if (isOnGround(leftPlayer)) setFillColor(green);
-      else setFillColor(red);
+      //if (isOnGround(leftPlayer)) setFillColor(green);
+      //else setFillColor(red);
       if (isTouchingLeftWall(leftPlayer)) text("touching left wall", width/2, height/2 - 50);
 
       fill(red, 102);

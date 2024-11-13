@@ -6,13 +6,13 @@
 import fisica.*;
 
 //Palette
-color red = color(255, 0, 0); //#FF0000 // Lava?
+color red = color(255, 0, 0); //#FF0000 // Spike // Image, dangerous terrain
 color green = color(0, 255, 0); //#00FF00 // Tree Leaves
 color blue = color(0, 0, 255); //#0000FF // Water
-color cyan = color(0, 255, 255); //#00FFFF // Ice
+color cyan = color(0, 255, 255); //#00FFFF // Ice // Image, low friction
 color magenta = color(255, 0, 255); //#FF00FF //
-color yellow = color(255, 255, 0); //#FFFF00 // Bounce
-color black = color(0); //#000000 // Ground
+color yellow = color(255, 255, 0); //#FFFF00 // Bounce // Image, higher restitution
+color black = color(0); //#000000 // Ground // Image, higher friction
 color white = color(255); //#FFFFFF //
 color brown = color(154, 102, 51); // Tree Trunk
 
@@ -21,6 +21,12 @@ float zoom = 1.5;
 boolean zoomOut = false;
 boolean zoomIn = false;
 int gridSize = 32;
+
+// Terrain
+PImage terrain;
+PImage leftGround, middleGround, rightGround, topGround;
+PImage leftSideGround, centerGround, rightSideGround, pillarGround;
+ArrayList<PImage> groundTiles = new ArrayList<PImage>();
 
 //Keyboard Booleans
 boolean wKey = false;
@@ -61,6 +67,7 @@ void setup() {
   textAlign(CENTER, CENTER);
   Fisica.init(this);
   map = loadImage("data/map.png");
+  loadTerrain();
   loadMap(map);
   makePlayers();
 }
@@ -95,26 +102,65 @@ void loadMap(PImage img) {
   for (int y = 0; y < map.height; y++) {
     for (int x = 0; x < map.width; x++) {
       color c = map.get(x, y);
+      color n = map.get(x, y-1);
+      color e = map.get(x+1, y);
+      color s = map.get(x, y+1);
+      color w = map.get(x-1, y);
       FBox b = new FBox(gridSize, gridSize);
-      b.setPosition(x*gridSize, y*gridSize);
+      b.setPosition((x+0.5)*gridSize, (y+0.5)*gridSize);
       b.setStatic(true);
       if (c == black) {
+        if (n != black) {
+          if (e == black && w != black) b.attachImage(groundTiles.get(0)); // west end
+          else if (e == black && w == black) b.attachImage(groundTiles.get(1)); // middle
+          else if (e != black && w == black) b.attachImage(groundTiles.get(2)); // east end
+          else if ( e != black && w != black) b.attachImage(groundTiles.get(3)); // top
+        } else if (n == black) {
+          if (e == black && w != black) b.attachImage(groundTiles.get(4)); // west side end
+          else if (e == black && w == black) b.attachImage(groundTiles.get(5)); // center ground
+          else if (e != black && w == black) b.attachImage(groundTiles.get(6)); // east side end
+          else if (e != black && w != black) b.attachImage(groundTiles.get(7)); // pillar
+        }
         //b.attachImage(ground);
         b.setFriction(4);
-        //b.setRestitution(0.2);
         b.setName("ground");
       }
       if (c == cyan) {
-        //b.attachImage(ground);
+        //b.attachImage(ice);
         b.setFriction(0);
         b.setName("ice");
       }
-      int gridX = int(map(x, 0, 1024, 0, 7));
-      int gridY = int(map(y, 0, 1024, 0, 7));
-      //int gridX = x / 4;  // Calculate grid square X (e.g., 0-7)
-      //int gridY = y / 4;  // Calculate grid square Y (e.g., 0-7)
-      gridTiles[gridX][gridY].add(b);  // Add the ground tile to the correct grid
+      if (c == brown) {
+        //b.attachImage(treeTrunk)
+        b.setSensor(true);
+        b.setName("tree trunk");
+      }
+      int gridX = x / 4;
+      int gridY = y / 4;
+      gridTiles[gridX][gridY].add(b);
       if (alpha(c) != 0) world.add(b);
     }
   }
+}
+
+void loadTerrain() {
+  terrain = loadImage("data/Terrain.png");
+  int s = 16;
+  groundTiles.add(scaleImage(terrain.get(3*s, 0*s, s, s), gridSize, gridSize));
+  groundTiles.add(scaleImage(terrain.get(4*s, 0*s, s, s), gridSize, gridSize));
+  groundTiles.add(scaleImage(terrain.get(5*s, 0*s, s, s), gridSize, gridSize));
+  groundTiles.add(scaleImage(terrain.get(6*s, 0*s, s, s), gridSize, gridSize));
+  groundTiles.add(scaleImage(terrain.get(3*s, 1*s, s, s), gridSize, gridSize));
+  groundTiles.add(scaleImage(terrain.get(4*s, 1*s, s, s), gridSize, gridSize));
+  groundTiles.add(scaleImage(terrain.get(5*s, 1*s, s, s), gridSize, gridSize));
+  groundTiles.add(scaleImage(terrain.get(6*s, 1*s, s, s), gridSize, gridSize));
+}
+
+PImage scaleImage(PImage img, int newWidth, int newHeight) {
+  PGraphics pg = createGraphics(newWidth, newHeight);
+  pg.noSmooth();  // Ensure no smoothing when drawing
+  pg.beginDraw();
+  pg.image(img, 0, 0, newWidth, newHeight);
+  pg.endDraw();
+  return pg.get();  // Return the scaled PImage
 }

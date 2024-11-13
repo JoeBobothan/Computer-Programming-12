@@ -87,8 +87,8 @@ boolean isTouchingRightWall(FBody player) {
 }
 
 boolean checkForGround(FBody player) {
-  int gridX = int(map(player.getX(), 0, 1024, 0, 7));
-  int gridY = int(map(player.getY(), 0, 1024, 0, 7));
+  int gridX = int(map(player.getX(), 0, 1024, 0, 8));
+  int gridY = int(map(player.getY(), 0, 1024, 0, 8));
 
   for (int _x = -1; _x <= 1; _x++) {
     for (int _y = -1; _y <= 1; _y++) {
@@ -96,7 +96,7 @@ boolean checkForGround(FBody player) {
       int checkY = gridY + _y;
       if (checkX >= 0 && checkX < 8 && checkY >= 0 && checkY < 8) {
         for (FBox b : gridTiles[checkX][checkY]) {
-          b.setFillColor(red);
+          //b.setFillColor(green);
           if (dist(player.getX(), player.getY(), b.getX(), b.getY()) < gridSize*1.5) ;//return true;
         }
       }
