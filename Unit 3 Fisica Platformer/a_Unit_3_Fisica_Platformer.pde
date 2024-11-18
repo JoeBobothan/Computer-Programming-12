@@ -6,48 +6,51 @@
 import fisica.*;
 
 //Palette
-color red = color(255, 0, 0); //#FF0000 // Spike // Image, dangerous terrain
-color green = color(0, 255, 0); //#00FF00 // Tree Leaves
-color blue = color(0, 0, 255); //#0000FF // Water
-color cyan = color(0, 255, 255); //#00FFFF // Ice // Image, low friction
-color magenta = color(255, 0, 255); //#FF00FF //
-color yellow = color(255, 255, 0); //#FFFF00 // Bounce // Image, higher restitution
-color black = color(0); //#000000 // Ground // Image, higher friction
-color white = color(255); //#FFFFFF //
-color brown = color(154, 102, 51); // Tree Trunk
+color black = color(0); // Ground
+color cyan = color(0, 255, 255); // Ice
+color white = color(255); // Spike
+color yellow = color(255, 255, 0); // Trampoline
+color brown = color(153, 102, 51); // Tree Trunk
+color green = color(0, 255, 0); // Treetop
+
+color red = color(255, 0, 0); // Lava
+color blue = color(0, 0, 255); // Water
+color magenta = color(255, 0, 255); //
 
 PImage map;
 float zoom = 1.5;
-boolean zoomOut = false;
-boolean zoomIn = false;
+boolean cameraFollow = false;
+boolean drawGrid = false;
 int gridSize = 32;
+int maxdoubleJumps = 1;
+int doubleJumps = 1;
 
 // Terrain
-PImage terrain;
-PImage leftGround, middleGround, rightGround, topGround;
-PImage leftSideGround, centerGround, rightSideGround, pillarGround;
-ArrayList<PImage> groundTiles = new ArrayList<PImage>();
+PImage ground, ice, spike, trampoline;
+PImage treeTrunk, treeIntersect, treetopCenter, treetopE, treetopW;
+//PImage bridge
+ArrayList<PImage> lavas = new ArrayList<PImage>();
+ArrayList<PImage> waters = new ArrayList<PImage>();
 
 //Keyboard Booleans
 boolean wKey = false;
 boolean aKey = false;
 boolean sKey = false;
 boolean dKey = false;
-
-boolean qKey = false;
-boolean eKey = false;
-boolean spaceKey = false;
-
 boolean upKey = false;
 boolean leftKey = false;
 boolean downKey = false;
 boolean rightKey = false;
+boolean qKey = false;
+boolean eKey = false;
+boolean spaceKey = false;
+boolean zoomOut = false;
+boolean zoomIn = false;
+
 
 //Fisica
 FWorld world;
-FPlayer leftPlayer;
-float tolerance = 1; // For some reason player is always a few pixels away from the wall
-
+FPlayer player;
 ArrayList<FBox>[][] gridTiles = new ArrayList[8][8];
 
 //Mode Framework
@@ -66,10 +69,11 @@ void setup() {
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   Fisica.init(this);
-  map = loadImage("data/map.png");
-  loadTerrain();
+  map = loadImage("data/map1.png");
+  loadImages();
   loadMap(map);
-  makePlayers();
+  player = new FPlayer();
+  world.add(player);
 }
 
 void draw() {
@@ -102,7 +106,6 @@ void loadMap(PImage img) {
   for (int y = 0; y < map.height; y++) {
     for (int x = 0; x < map.width; x++) {
       color c = map.get(x, y);
-      color n = map.get(x, y-1);
       color e = map.get(x+1, y);
       color s = map.get(x, y+1);
       color w = map.get(x-1, y);
@@ -110,30 +113,40 @@ void loadMap(PImage img) {
       b.setPosition((x+0.5)*gridSize, (y+0.5)*gridSize);
       b.setStatic(true);
       if (c == black) {
-        if (n != black) {
-          if (e == black && w != black) b.attachImage(groundTiles.get(0)); // west end
-          else if (e == black && w == black) b.attachImage(groundTiles.get(1)); // middle
-          else if (e != black && w == black) b.attachImage(groundTiles.get(2)); // east end
-          else if ( e != black && w != black) b.attachImage(groundTiles.get(3)); // top
-        } else if (n == black) {
-          if (e == black && w != black) b.attachImage(groundTiles.get(4)); // west side end
-          else if (e == black && w == black) b.attachImage(groundTiles.get(5)); // center ground
-          else if (e != black && w == black) b.attachImage(groundTiles.get(6)); // east side end
-          else if (e != black && w != black) b.attachImage(groundTiles.get(7)); // pillar
-        }
-        //b.attachImage(ground);
+        b.attachImage(ground);
         b.setFriction(4);
         b.setName("ground");
       }
       if (c == cyan) {
-        //b.attachImage(ice);
+        b.attachImage(ice);
         b.setFriction(0);
         b.setName("ice");
       }
+      if (c == white) {
+        b.attachImage(spike);
+        b.setName("spike");
+      }
+      if (c == yellow) {
+        b.attachImage(trampoline);
+        b.setRestitution(1.25);
+        b.setName("trampoline");
+      }
       if (c == brown) {
-        //b.attachImage(treeTrunk)
+        b.attachImage(treeTrunk);
         b.setSensor(true);
         b.setName("tree trunk");
+      }
+      if (c == green) {
+        setTreetopImage(b, c, e, s, w);
+        b.setName("treetop");
+      }
+      if (c == red) {
+        b.attachImage(lavas.get(int(random(0, lavas.size()))));
+        b.setName("lava");
+      }
+      if (c == blue) {
+        b.attachImage(waters.get(int(random(0, waters.size()))));
+        b.setName("water");
       }
       int gridX = x / 4;
       int gridY = y / 4;
@@ -143,24 +156,28 @@ void loadMap(PImage img) {
   }
 }
 
-void loadTerrain() {
-  terrain = loadImage("data/Terrain.png");
-  int s = 16;
-  groundTiles.add(scaleImage(terrain.get(3*s, 0*s, s, s), gridSize, gridSize));
-  groundTiles.add(scaleImage(terrain.get(4*s, 0*s, s, s), gridSize, gridSize));
-  groundTiles.add(scaleImage(terrain.get(5*s, 0*s, s, s), gridSize, gridSize));
-  groundTiles.add(scaleImage(terrain.get(6*s, 0*s, s, s), gridSize, gridSize));
-  groundTiles.add(scaleImage(terrain.get(3*s, 1*s, s, s), gridSize, gridSize));
-  groundTiles.add(scaleImage(terrain.get(4*s, 1*s, s, s), gridSize, gridSize));
-  groundTiles.add(scaleImage(terrain.get(5*s, 1*s, s, s), gridSize, gridSize));
-  groundTiles.add(scaleImage(terrain.get(6*s, 1*s, s, s), gridSize, gridSize));
+void loadImages() {
+  ground = loadImage("data/mario_terrain/brick.png");
+  ice = loadImage("data/mario_terrain/blueBlock.png");
+  ice.resize(gridSize, gridSize);
+  spike = loadImage("data/enemies_and_more/spike.png");
+  trampoline = loadImage("data/enemies_and_more/trampoline.png");
+  treeIntersect = loadImage("data/mario_terrain/tree_intersect.png");
+  treeTrunk = loadImage("data/mario_terrain/tree_trunk.png");
+  treetopCenter = loadImage("data/mario_terrain/treetop_center.png");
+  treetopE = loadImage("data/mario_terrain/treetop_e.png");
+  treetopW = loadImage("data/mario_terrain/treetop_w.png");
+  for (int i = 0; i < 6; i++) {
+    lavas.add(loadImage("data/mario_terrain/lava" + i + ".png"));
+  }
+  for (int i = 1; i < 5; i++) {
+    waters.add(loadImage("data/mario_terrain/water" + i + ".png"));
+  }
 }
 
-PImage scaleImage(PImage img, int newWidth, int newHeight) {
-  PGraphics pg = createGraphics(newWidth, newHeight);
-  pg.noSmooth();  // Ensure no smoothing when drawing
-  pg.beginDraw();
-  pg.image(img, 0, 0, newWidth, newHeight);
-  pg.endDraw();
-  return pg.get();  // Return the scaled PImage
+void setTreetopImage(FBody b, color c, color e, color s, color w) {
+  if (s == brown) b.attachImage(treeIntersect);
+  else if (e == green && w == green) b.attachImage(treetopCenter);
+  else if (w != green) b.attachImage(treetopW);
+  else if (e != green) b.attachImage(treetopE);
 }
