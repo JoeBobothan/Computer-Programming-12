@@ -19,16 +19,15 @@ color magenta = color(255, 0, 255); //
 
 PImage map;
 float zoom = 1.5;
-boolean cameraFollow = false;
+boolean cameraFollow = true;
 boolean drawGrid = false;
 int gridSize = 32;
-int maxdoubleJumps = 1;
-int doubleJumps = 1;
 
 // Terrain
-PImage ground, ice, spike, trampoline;
+PImage ice, spike, trampoline;
 PImage treeTrunk, treeIntersect, treetopCenter, treetopE, treetopW;
 //PImage bridge
+ArrayList<PImage> grounds = new ArrayList<PImage>();
 ArrayList<PImage> lavas = new ArrayList<PImage>();
 ArrayList<PImage> waters = new ArrayList<PImage>();
 
@@ -69,7 +68,7 @@ void setup() {
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   Fisica.init(this);
-  map = loadImage("data/map1.png");
+  map = loadImage("data/map.png");
   loadImages();
   loadMap(map);
   player = new FPlayer();
@@ -113,7 +112,7 @@ void loadMap(PImage img) {
       b.setPosition((x+0.5)*gridSize, (y+0.5)*gridSize);
       b.setStatic(true);
       if (c == black) {
-        b.attachImage(ground);
+        b.attachImage(grounds.get(4));
         b.setFriction(4);
         b.setName("ground");
       }
@@ -157,7 +156,6 @@ void loadMap(PImage img) {
 }
 
 void loadImages() {
-  ground = loadImage("data/mario_terrain/brick.png");
   ice = loadImage("data/mario_terrain/blueBlock.png");
   ice.resize(gridSize, gridSize);
   spike = loadImage("data/enemies_and_more/spike.png");
@@ -172,6 +170,12 @@ void loadImages() {
   }
   for (int i = 1; i < 5; i++) {
     waters.add(loadImage("data/mario_terrain/water" + i + ".png"));
+  }
+  for (int i = 1; i < 10; i++) {
+    grounds.add(loadImage("data/mario_terrain/brick_" + i + ".png"));
+    // add tiles for "pillars", all 4 cardinal directions
+    // add tiles for only connecting one side (4 of them)
+    // detect adjacent tiles for setting correct image
   }
 }
 

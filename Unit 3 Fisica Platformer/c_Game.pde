@@ -13,8 +13,6 @@ void game() {
   }
   player.act();
   drawWorld();
-  //fill(white, 153);
-  //square(width/2, height/2, gridSize*zoom);
 }
 
 void drawWorld() {
@@ -41,8 +39,9 @@ void drawWorld() {
   }
   pop();
   fill(white);
-  if (spaceKey) text("Air Jumps: ∞", player.getX(), player.getY());
-  else text("Air Jumps: " + doubleJumps, player.getX(), player.getY());
+  if (spaceKey) text("Air Jumps: ∞", player.getX(), player.getY() - 10);
+  else text("Air Jumps: " + player.doubleJumps, player.getX(), player.getY() - 10);
+  text("Health: " + player.health, player.getX(), player.getY() + 10);
 }
 
 void gameClicks() {

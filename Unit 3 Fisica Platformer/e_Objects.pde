@@ -9,17 +9,23 @@ void mouseReleased() {
     pauseClicks();
   }
 }
-boolean isOnGround() {
+
+boolean bottomSensor(String f) {
   FBox s = player.sensors.get(1);
   ArrayList<FContact> contactList = s.getContacts(); // Get list of contacts of player
   for (FContact c : contactList) { // For every FContact, name it c and run
     FBody b = c.getBody1(); // Get the FBody from the contact
-    if ("ground".equals(b.getName())) {
-      return true;
+    if (f.equals("floor")) {
+      if ("ground".equals(b.getName()) || "ice".equals(b.getName()) || "treetop".equals(b.getName()) || "trampoline".equals(b.getName())) {
+        return true;
+      }
+    } else {
+      if (f.equals(b.getName())) return true;
     }
   }
   return false;
 }
+
 
 boolean isTouchingLeftWall() {
   FBox s = player.sensors.get(2);

@@ -4,11 +4,16 @@ class FPlayer extends FBox {
   int jumpTimer = 0;
   float x, y;
   float vx, vy;
+  int health = 10;
+  int hurtFrames;
+  int maxdoubleJumps = 1;
+  int doubleJumps = 1;
+  boolean jump;
 
   FPlayer() {
     super(gridSize, gridSize);
     setPosition(200, 200);
-    setFillColor(red);
+    setFillColor(white);
     setRotatable(false);
     setNoStroke();
     setFriction(0);
@@ -40,36 +45,48 @@ class FPlayer extends FBox {
     for (FBox b : sensors) {
       b.setVelocity(vx, vy);
     }
-    collisions();
   }
 
   void movement() {
     float vxChange = 0;
-    boolean jump = false;
+    jump = false;
     int gridX = int(map(this.getX(), 0, 1024, 0, 8));
     int gridY = int(map(this.getY(), 0, 1024, 0, 8));
-    if (isOnGround()) doubleJumps = maxdoubleJumps;
+    collisions();
     if (jumpTimer > 0) jumpTimer--;
     else if (wKey && !jumping) {
-      if (isOnGround()) {
-        jumpTimer = 10;
+      if (bottomSensor("floor")) {
+        jumpTimer = 17;
         jumping = true;
         jump = true;
-      } else if (!isOnGround() && (doubleJumps > 0 || spaceKey)) {
-        jumpTimer = 10;
+      } else if (!bottomSensor("floor") && (doubleJumps > 0 || spaceKey)) {
+        jumpTimer = 17;
         jumping = true;
         jump = true;
         if (!spaceKey) doubleJumps--;
       }
     }
     if (!wKey) jumping = false;
-    if (aKey && !isTouchingLeftWall()) vxChange -= map(abs(vx), 0, 300, 30, 10);
-    if (dKey && !isTouchingRightWall()) vxChange += map(abs(vx), 0, 300, 30, 10);
+    if (aKey && !isTouchingLeftWall()) vxChange -= 5 + map(abs(vx), 0, 300, 15, 5);
+    if (dKey && !isTouchingRightWall()) vxChange += 5 + map(abs(vx), 0, 300, 15, 5);
 
     if (jump) setVelocity(vx*0.95 + vxChange, -400);
     else setVelocity(vx*0.95 + vxChange, vy);
   }
 
   void collisions() {
+    if (hurtFrames > 0) {
+      hurtFrames--;
+      if (hurtFrames > 25 && hurtFrames%10 >= 5) setFillColor(red);
+      else setFillColor(white);
+    }
+    if (bottomSensor("floor")) doubleJumps = maxdoubleJumps;
+    else if (bottomSensor("spike")) {
+      if (hurtFrames <= 0) {
+        health--;
+        jump = true;
+        hurtFrames = 100;
+      }
+    }
   }
 }
