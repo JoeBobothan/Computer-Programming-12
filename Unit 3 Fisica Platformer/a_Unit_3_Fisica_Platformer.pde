@@ -19,7 +19,7 @@ color magenta = color(255, 0, 255); //
 
 PImage map;
 float zoom = 1.5;
-boolean cameraFollow = true;
+boolean cameraFollow = false;
 boolean drawGrid = false;
 int gridSize = 32;
 
@@ -105,6 +105,7 @@ void loadMap(PImage img) {
   for (int y = 0; y < map.height; y++) {
     for (int x = 0; x < map.width; x++) {
       color c = map.get(x, y);
+      color n = map.get(x, y-1);
       color e = map.get(x+1, y);
       color s = map.get(x, y+1);
       color w = map.get(x-1, y);
@@ -136,7 +137,7 @@ void loadMap(PImage img) {
         b.setName("tree trunk");
       }
       if (c == green) {
-        setTreetopImage(b, c, e, s, w);
+        setTreetopImage(b, e, s, w);
         b.setName("treetop");
       }
       if (c == red) {
@@ -173,13 +174,21 @@ void loadImages() {
   }
   for (int i = 1; i < 10; i++) {
     grounds.add(loadImage("data/mario_terrain/brick_" + i + ".png"));
-    // add tiles for "pillars", all 4 cardinal directions
-    // add tiles for only connecting one side (4 of them)
-    // detect adjacent tiles for setting correct image
+    // Sideways "pillar" is #2 in list, grounds.get(1);
+    // vertical pillar is bottom endcap
+    // west endcap is grounds.get(0) and east is grounds.get(3);
+    // top and bottom endcaps made
   }
 }
 
-void setTreetopImage(FBody b, color c, color e, color s, color w) {
+void setGroundImage(FBody b, color n, color e, color s, color w) {
+  if (s == brown) b.attachImage(grounds.get();
+  else if (e == green && w == green) b.attachImage(treetopCenter);
+  else if (w != green) b.attachImage(treetopW);
+  else if (e != green) b.attachImage(treetopE);
+}
+
+void setTreetopImage(FBody b, color e, color s, color w) {
   if (s == brown) b.attachImage(treeIntersect);
   else if (e == green && w == green) b.attachImage(treetopCenter);
   else if (w != green) b.attachImage(treetopW);
