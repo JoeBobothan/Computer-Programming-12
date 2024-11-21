@@ -1,5 +1,5 @@
 void game() {
-  background(black);
+  background(cyan);
   if (qKey) {
     player.setPosition(200, 200);
     player.setVelocity(0, 0);

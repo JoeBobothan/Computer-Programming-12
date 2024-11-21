@@ -68,7 +68,7 @@ void setup() {
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   Fisica.init(this);
-  map = loadImage("data/map.png");
+  map = loadImage("data/map1.png");
   loadImages();
   loadMap(map);
   player = new FPlayer();
@@ -174,15 +174,18 @@ void loadImages() {
   }
   for (int i = 1; i < 10; i++) {
     grounds.add(loadImage("data/mario_terrain/brick_" + i + ".png"));
+    // brick1 - brick9, 9 blicks in a grid
     // Sideways "pillar" is #2 in list, grounds.get(1);
-    // vertical pillar is bottom endcap
-    // west endcap is grounds.get(0) and east is grounds.get(3);
+    // vertical pillar is south endcap
+    // west endcap is grounds.get(0) and east endcap is grounds.get(3);
     // top and bottom endcaps made
   }
+  grounds.add(loadImage("data/mario_terrain/brick_endcap_n.png"));
+  grounds.add(loadImage("data/mario_terrain/brick_endcap_s.png"));
 }
 
 void setGroundImage(FBody b, color n, color e, color s, color w) {
-  if (s == brown) b.attachImage(grounds.get();
+  if (s == brown) b.attachImage(grounds.get(1));
   else if (e == green && w == green) b.attachImage(treetopCenter);
   else if (w != green) b.attachImage(treetopW);
   else if (e != green) b.attachImage(treetopE);
