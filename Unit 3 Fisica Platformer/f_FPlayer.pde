@@ -6,13 +6,14 @@ class FPlayer extends FBox {
   float vx, vy;
   int health = 10;
   int hurtFrames;
-  int maxdoubleJumps = 1;
+  int maxDoubleJumps = 1;
   int doubleJumps = 1;
   boolean jump;
 
   FPlayer() {
-    super(gridSize-2 , gridSize-2);
-    setPosition(200, 200);
+    super(gridSize-2, gridSize-2);
+    setName("player");
+    setPosition(16, 200);
     setFillColor(white);
     setRotatable(false);
     setNoStroke();
@@ -45,21 +46,22 @@ class FPlayer extends FBox {
     for (FBox b : sensors) {
       b.setVelocity(vx, vy);
     }
+    if (y > 2000) {
+      health--;
+      setPosition(16, 200);
+    }
   }
 
   void movement() {
     float vxChange = 0;
     jump = false;
-    int gridX = int(map(this.getX(), 0, 1024, 0, 8));
-    int gridY = int(map(this.getY(), 0, 1024, 0, 8));
-    collisions();
     if (jumpTimer > 0) jumpTimer--;
     else if (wKey && !jumping) {
-      if (bottomSensor("floor")) {
+      if (sensor(1, "floor")) {
         jumpTimer = 17;
         jumping = true;
         jump = true;
-      } else if (!bottomSensor("floor") && (doubleJumps > 0 || spaceKey)) {
+      } else if (!sensor(1, "floor") && (doubleJumps > 0 || spaceKey)) {
         jumpTimer = 17;
         jumping = true;
         jump = true;
@@ -67,25 +69,44 @@ class FPlayer extends FBox {
       }
     }
     if (!wKey) jumping = false;
-    if (aKey && !isTouchingLeftWall()) vxChange -= 5 + map(abs(vx), 0, 300, 15, 5);
-    if (dKey && !isTouchingRightWall()) vxChange += 5 + map(abs(vx), 0, 300, 15, 5);
+    if (aKey && !sensor(2, "floor")) vxChange -= 50 + map(abs(vx), 0, 300, 15, 5);
+    if (dKey && !sensor(3, "floor")) vxChange += 50 + map(abs(vx), 0, 300, 15, 5);
+    float slide = 0;
+    if (sensor(1, "ice")) slide = 0.95;
+    else if (sensor(1, "spike")) {
+      slide = 0.8;
+      doubleJumps = maxDoubleJumps;
+      if (hurtFrames <= 0) {
+        health--;
+        hurtFrames = 100;
+      }
+    } else if (sensor(1, "floor")) {
+      slide = 0.85;
+      vxChange *= 0.75;
+      doubleJumps = maxDoubleJumps;
+    } else slide = 0.85;
 
-    if (jump) setVelocity(vx*0.95 + vxChange, -400);
-    else setVelocity(vx*0.95 + vxChange, vy);
-  }
-
-  void collisions() {
+    if (jump) setVelocity(vx*slide + vxChange, -400);
+    else setVelocity(vx*slide + vxChange, vy);
     if (hurtFrames > 0) {
       hurtFrames--;
       if (hurtFrames > 25 && hurtFrames%10 >= 5) setFillColor(color(red, 0));
       else setFillColor(white);
     }
-    if (bottomSensor("floor")) doubleJumps = maxdoubleJumps;
-    else if (bottomSensor("spike")) {
-      if (hurtFrames <= 0) {
-        health--;
-        hurtFrames = 100;
+  }
+
+  boolean sensor(int sensorNumber, String f) {
+    FBox s = player.sensors.get(sensorNumber);
+    ArrayList<FContact> contactList = s.getContacts(); // Get list of contacts of player
+    for (FContact c : contactList) { // For every FContact, name it c and run
+      if (f.equals("floor")) {
+        if (c.contains("ground") || c.contains("ice") || c.contains("treetop") || c.contains("trampoline") || c.contains("bridge")) {
+          return true;
+        }
+      } else {
+        if (c.contains(f)) return true;
       }
     }
+    return false;
   }
 }

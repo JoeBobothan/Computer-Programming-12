@@ -15,16 +15,16 @@ color green = color(0, 255, 0); // Treetop
 
 color red = color(255, 0, 0); // Lava
 color blue = color(0, 0, 255); // Water
-color magenta = color(255, 0, 255); //
+color magenta = color(255, 0, 255); // Bridge
 
 PImage map;
 float zoom = 1.5;
-boolean cameraFollow = false;
+boolean cameraFollow = true;
 boolean drawGrid = false;
 int gridSize = 32;
 
 // Terrain
-PImage ice, spike, trampoline;
+PImage ice, spike, trampoline, bridge;
 PImage treeTrunk, treeIntersect, treetopCenter, treetopE, treetopW;
 //PImage bridge
 ArrayList<PImage> grounds = new ArrayList<PImage>();
@@ -46,11 +46,10 @@ boolean spaceKey = false;
 boolean zoomOut = false;
 boolean zoomIn = false;
 
-
 //Fisica
 FWorld world;
 FPlayer player;
-ArrayList<FBox>[][] gridTiles = new ArrayList[8][8];
+ArrayList<FGameObject> terrain = new ArrayList<FGameObject>();
 
 //Mode Framework
 int mode = 1;
@@ -64,7 +63,7 @@ boolean enterWinMode = false;
 int freeze = 0;
 
 void setup() {
-  fullScreen();
+  fullScreen(P2D);
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
   Fisica.init(this);
@@ -95,13 +94,6 @@ void draw() {
 void loadMap(PImage img) {
   world = new FWorld(-2000, -2000, 2000, 2000);
   world.setGravity(0, 981);
-
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      gridTiles[i][j] = new ArrayList<FBox>();
-    }
-  }
-
   for (int y = 0; y < map.height; y++) {
     for (int x = 0; x < map.width; x++) {
       color c = map.get(x, y);
@@ -109,49 +101,56 @@ void loadMap(PImage img) {
       color e = map.get(x+1, y);
       color s = map.get(x, y+1);
       color w = map.get(x-1, y);
-      FBox b = new FBox(gridSize, gridSize);
-      b.setPosition((x+0.5)*gridSize, (y+0.5)*gridSize);
-      b.setStatic(true);
-      if (c == black) {
-        b.attachImage(grounds.get(4));
-        b.setFriction(4);
-        b.setName("ground");
+      if (c != magenta && c != red) {
+        FBox b = new FBox(gridSize, gridSize);
+        b.setPosition((x+0.5)*gridSize, (y+0.5)*gridSize);
+        b.setStatic(true);
+
+        if (c == black) {
+          setGroundImage(b, n, e, s, w);
+          b.setFriction(4);
+          b.setName("ground");
+        }
+        if (c == cyan) {
+          b.attachImage(ice);
+          b.setFriction(0.1);
+          b.setName("ice");
+        }
+        if (c == white) {
+          b.attachImage(spike);
+          b.setName("spike");
+        }
+        if (c == yellow) {
+          b.attachImage(trampoline);
+          b.setRestitution(1.25);
+          b.setName("trampoline");
+        }
+        if (c == brown) {
+          b.attachImage(treeTrunk);
+          b.setSensor(true);
+          b.setName("tree trunk");
+        }
+        if (c == green) {
+          setTreetopImage(b, e, s, w);
+          b.setName("treetop");
+        }
+        if (alpha(c) != 0) world.add(b);
       }
-      if (c == cyan) {
-        b.attachImage(ice);
-        b.setFriction(0);
-        b.setName("ice");
-      }
-      if (c == white) {
-        b.attachImage(spike);
-        b.setName("spike");
-      }
-      if (c == yellow) {
-        b.attachImage(trampoline);
-        b.setRestitution(1.25);
-        b.setName("trampoline");
-      }
-      if (c == brown) {
-        b.attachImage(treeTrunk);
-        b.setSensor(true);
-        b.setName("tree trunk");
-      }
-      if (c == green) {
-        setTreetopImage(b, e, s, w);
-        b.setName("treetop");
+      if (c == magenta) {
+        FBridge br = new FBridge((x+0.5)*gridSize, (y+0.5)*gridSize);
+        terrain.add(br);
+        world.add(br);
       }
       if (c == red) {
-        b.attachImage(lavas.get(int(random(0, lavas.size()))));
-        b.setName("lava");
+        FLava la = new FLava((x+0.5)*gridSize, (y+0.5)*gridSize);
+        terrain.add(la);
+        world.add(la);
       }
       if (c == blue) {
-        b.attachImage(waters.get(int(random(0, waters.size()))));
-        b.setName("water");
+        FWater wa = new FWater((x+0.5)*gridSize, (y+0.5)*gridSize);
+        terrain.add(wa);
+        world.add(wa);
       }
-      int gridX = x / 4;
-      int gridY = y / 4;
-      gridTiles[gridX][gridY].add(b);
-      if (alpha(c) != 0) world.add(b);
     }
   }
 }
@@ -161,6 +160,7 @@ void loadImages() {
   ice.resize(gridSize, gridSize);
   spike = loadImage("data/enemies_and_more/spike.png");
   trampoline = loadImage("data/enemies_and_more/trampoline.png");
+  bridge = loadImage("data/mario_terrain/bridge_center.png");
   treeIntersect = loadImage("data/mario_terrain/tree_intersect.png");
   treeTrunk = loadImage("data/mario_terrain/tree_trunk.png");
   treetopCenter = loadImage("data/mario_terrain/treetop_center.png");
@@ -174,21 +174,34 @@ void loadImages() {
   }
   for (int i = 1; i < 10; i++) {
     grounds.add(loadImage("data/mario_terrain/brick_" + i + ".png"));
-    // brick1 - brick9, 9 blicks in a grid
-    // Sideways "pillar" is #2 in list, grounds.get(1);
-    // vertical pillar is south endcap
-    // west endcap is grounds.get(0) and east endcap is grounds.get(3);
-    // top and bottom endcaps made
   }
   grounds.add(loadImage("data/mario_terrain/brick_endcap_n.png"));
   grounds.add(loadImage("data/mario_terrain/brick_endcap_s.png"));
 }
 
 void setGroundImage(FBody b, color n, color e, color s, color w) {
-  if (s == brown) b.attachImage(grounds.get(1));
-  else if (e == green && w == green) b.attachImage(treetopCenter);
-  else if (w != green) b.attachImage(treetopW);
-  else if (e != green) b.attachImage(treetopE);
+  /***/  if ((n != black && n != white) && (e == black || e == white) && (s == black || s == white) && (w != black && w != white)) b.attachImage(grounds.get(0));// 3x3 Grid
+  else if ((n != black && n != white) && (e == black || e == white) && (s == black || s == white) && (w == black || w == white)) b.attachImage(grounds.get(1));//   *
+  else if ((n != black && n != white) && (e != black && e != white) && (s == black || s == white) && (w == black || w == white)) b.attachImage(grounds.get(2));//   *
+  else if ((n == black || n == white) && (e == black || e == white) && (s == black || s == white) && (w != black && w != white)) b.attachImage(grounds.get(3));//   *
+  else if ((n == black || n == white) && (e == black || e == white) && (s == black || s == white) && (w == black || w == white)) b.attachImage(grounds.get(4));//   *
+  else if ((n == black || n == white) && (e != black && e != white) && (s == black || s == white) && (w == black || w == white)) b.attachImage(grounds.get(5));//   *
+  else if ((n == black || n == white) && (e == black || e == white) && (s != black && s != white) && (w != black && w != white)) b.attachImage(grounds.get(6));//   *
+  else if ((n == black || n == white) && (e == black || e == white) && (s != black && s != white) && (w == black || w == white)) b.attachImage(grounds.get(7));//   *
+  else if ((n == black || n == white) && (e != black && e != white) && (s != black && s != white) && (w == black || w == white)) b.attachImage(grounds.get(8));// 3x3 Grid
+
+  else if ((n != black && n != white) && (e == black || e == white) && (s != black && s != white) && (w == black || w == white)) b.attachImage(grounds.get(1));// Hoizontal Pillar
+  else if ((n == black || n == white) && (e != black && e != white) && (s == black || s == white) && (w != black && w != white)) b.attachImage(grounds.get(10));// Vertical Pillar
+
+  else if ((n != black && n != white) && (e != black && e != white) && (s == black || s == white) && (w != black && w != white)) b.attachImage(grounds.get(9));// North Endcap
+  else if ((n == black || n == white) && (e != black && e != white) && (s != black && s != white) && (w != black && w != white)) b.attachImage(grounds.get(10));// South Endcap
+  else if ((n != black && n != white) && (e == black || e == white) && (s != black && s != white) && (w != black && w != white)) b.attachImage(grounds.get(0));// West Endcap
+  else if ((n != black && n != white) && (e != black && e != white) && (s != black && s != white) && (w == black || w == white)) b.attachImage(grounds.get(2));// East Endcap
+
+  else if ((n != black && n != white) && (e != black && e != white) && (s != black && s != white) && (w != black && w != white)) b.attachImage(grounds.get(9));// Standalone
+
+  // well damn it still looks odd, next time: use the brick_all.png to find the old top layer of bricks
+  // and for the other layers of brick, get rid of the 'larger' layer by reverting it to normal height, and increase the dark grey by 1 px to 3 px
 }
 
 void setTreetopImage(FBody b, color e, color s, color w) {
